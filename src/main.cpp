@@ -155,12 +155,12 @@ int main() {
           vector<double> next_x_vals;
           vector<double> next_y_vals;
 
-		  for (int i = 0; i < pts_veh.size(); i++)
+		  for (int i = 0; i < pts_veh.row(0).size(); i++)
 		  {
 			  next_x_vals.push_back(pts_veh(0, i));
 			  next_y_vals.push_back(pts_veh(1, i));
 		  }
-		  std::cout << "main::main() Refernee points added" << std::endl;
+		  std::cout << "main::main() Refernece points added" << std::endl;
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Yellow line
 
