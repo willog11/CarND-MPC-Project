@@ -124,8 +124,8 @@ class FG_eval {
 			AD<double> a0 = vars[a_start + i - 1];
 
 			// F[t] and heading angle
-			AD<double> f0 = coeffs[0] + coeffs[1] * x0;
-			AD<double> psides0 = CppAD::atan(coeffs[1]);
+			AD<double> f0 = coeffs[0] + coeffs[1] * x0 + coeffs[2] * CppAD::pow(x0, 2) + coeffs[3] * CppAD::pow(x0, 3);
+			AD<double> psides0 = CppAD::atan(coeffs[1] + 2 * x0 * coeffs[2] + 3 * x0 * coeffs[3] * CppAD::pow(x0, 2));
 
 			// x_[t] = x[t-1] + v[t-1] * cos(psi[t-1]) * dt
 			// y_[t] = y[t-1] + v[t-1] * sin(psi[t-1]) * dt
@@ -137,8 +137,8 @@ class FG_eval {
 			fg[1 + y_start + i] = y1 - (y0 + v0 * CppAD::sin(psi0) * dt);
 			fg[1 + psi_start + i] = psi1 - (psi0 - v0 / Lf * delta0 * dt); // Applying polarity update for simulator steering
 			fg[1 + v_start + i] = v1 - (v0 + a0 * dt);
-			fg[1 + cte_start + i] = f0 - (cte0 + v0 * CppAD::sin(epsi0) * dt);
-			fg[1 + epsi_start + i] = epsi1 - (epsi0 - psides0 + v0 / Lf * dt);
+			fg[1 + cte_start + i] = cte1 - ((f0 - y0) + v0 * CppAD::sin(epsi0) * dt);
+			fg[1 + epsi_start + i] = epsi1 - ((psi0 - psides0) + v0 / Lf * dt);
 		}
 	}
 };
