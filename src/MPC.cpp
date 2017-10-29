@@ -65,16 +65,17 @@ class FG_eval {
 			fg[0] += CppAD::pow(vars[epsi_start + i], 2);
 			fg[0] += CppAD::pow(vars[v_start + i] - v_ref, 2);
 		}
-
+		std::cout << "FG_eval::Operator() CTE cost function updated" << endl;
 		// Minimize change rate
-		for (size_t i = 0; i < N; i++)
+		for (size_t i = 0; i < N - 1; i++)
 		{
 			fg[0] += CppAD::pow(vars[delta_start + i], 2);
 			fg[0] += CppAD::pow(vars[a_start + i], 2);
 		}
+		std::cout << "FG_eval::Operator() Change rate cost function updated" << endl;
 
 		// Minimize the value gap between sequential actuations  - smoothen the control.
-		for (size_t i = 0; i < N; i++)
+		for (size_t i = 0; i < N - 2; i++)
 		{
 			fg[0] += CppAD::pow(vars[delta_start + i + 1], 2) - CppAD::pow(vars[delta_start + i], 2);
 			fg[0] += CppAD::pow(vars[a_start + i + 1], 2) - CppAD::pow(vars[a_start + i], 2);
