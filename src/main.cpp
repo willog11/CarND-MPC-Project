@@ -106,7 +106,8 @@ int main() {
 			  pts_veh(0, i) = (cos(psi) * (ptsx[i] - px)) - (sin(psi) * (ptsy[i] - py)); // X component
 			  pts_veh(1, i) = (sin(psi) * (ptsx[i] - px)) + (cos(psi) * (ptsy[i] - py)); // Y component
 		  }
-	
+		  std::cout << "main::main() Points transformed" << std::endl;
+		
 		  // Fit a polynomial to the above x and y coordinates
 		  auto coeffs = polyfit(pts_veh.row(0), pts_veh.row(1), 1);
 
@@ -143,7 +144,7 @@ int main() {
 			  mpc_x_vals.push_back(mpc.pred_path(0, i));
 			  mpc_y_vals.push_back(mpc.pred_path(1, i));
 		  }
-
+		  std::cout << "main::main() MPC points added" << std::endl;
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Green line
 
@@ -159,7 +160,7 @@ int main() {
 			  next_x_vals.push_back(pts_veh(0, i));
 			  next_y_vals.push_back(pts_veh(1, i));
 		  }
-
+		  std::cout << "main::main() Refernee points added" << std::endl;
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Yellow line
 
