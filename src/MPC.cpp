@@ -50,7 +50,6 @@ class FG_eval {
 		// NOTE: You'll probably go back and forth between this function and
 		// the Solver function below.
 
-		std::cout << "FG_eval::Operator() start" << endl;
 		fg[0] = 0.0;
 
 
@@ -65,14 +64,13 @@ class FG_eval {
 			fg[0] += CppAD::pow(vars[epsi_start + i], 2);
 			fg[0] += CppAD::pow(vars[v_start + i] - v_ref, 2);
 		}
-		std::cout << "FG_eval::Operator() CTE cost function updated" << endl;
+
 		// Minimize change rate
 		for (size_t i = 0; i < N - 1; i++)
 		{
 			fg[0] += CppAD::pow(vars[delta_start + i], 2);
 			fg[0] += CppAD::pow(vars[a_start + i], 2);
 		}
-		std::cout << "FG_eval::Operator() Change rate cost function updated" << endl;
 
 		// Minimize the value gap between sequential actuations  - smoothen the control.
 		for (size_t i = 0; i < N - 2; i++)
@@ -80,7 +78,6 @@ class FG_eval {
 			fg[0] += CppAD::pow(vars[delta_start + i + 1], 2) - CppAD::pow(vars[delta_start + i], 2);
 			fg[0] += CppAD::pow(vars[a_start + i + 1], 2) - CppAD::pow(vars[a_start + i], 2);
 		}
-		std::cout << "FG_eval::Operator() cost function updated" << endl;
 
 		// **********************************************************
 		// Model 
@@ -143,7 +140,6 @@ class FG_eval {
 			fg[1 + cte_start + i] = f0 - (cte0 + v0 * CppAD::sin(epsi0) * dt);
 			fg[1 + epsi_start + i] = epsi1 - (epsi0 - psides0 + v0 / Lf * dt);
 		}
-		std::cout << "FG_eval::Operator() finished" << endl;
 	}
 };
 
@@ -167,7 +163,6 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   double cte = state[4];
   double epsi = state[5];
 
-  std::cout << "MPC::Solve() start" << endl;
   // TODO: Set the number of model variables (includes both states and inputs).
   // For example: If the state is a 4 element vector, the actuators is a 2
   // element vector and there are 10 timesteps. The number of variables is:
@@ -222,7 +217,6 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   constraints_upperbound[cte_start] = cte;
   constraints_upperbound[epsi_start] = epsi;
 
-  std::cout << "MPC::Solve() constraints and variables defined" << endl;
 
   // object that computes objective and constraints
   FG_eval fg_eval(coeffs);
@@ -253,7 +247,6 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
       options, vars, vars_lowerbound, vars_upperbound, constraints_lowerbound,
       constraints_upperbound, fg_eval, solution);
 
-  std::cout << "MPC::Solve() solver ran" << endl;
 
   // Check some of the solution values
   ok &= solution.status == CppAD::ipopt::solve_result<Dvector>::success;
@@ -274,6 +267,6 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
 	  pred_path(0, i) = solution.x[x_start + i];
 	  pred_path(1, i) = solution.x[y_start + i];
   }
-  std::cout << "MPC::Solve() predicted path set" << endl;
+
   return result;
 }

@@ -101,15 +101,15 @@ int main() {
 		  // ym = (sin(psi) * (ptsx[i] - px)) + (cos(psi) * (ptsy[i] - py))
 
 		  Eigen::MatrixXd pts_veh(2, ptsx.size());
-		  for (int i = 0; i < ptsx.size(); i++)
+		  for (size_t i = 0; i < ptsx.size(); i++)
 		  {
 			  pts_veh(0, i) = (cos(psi) * (ptsx[i] - px)) - (sin(psi) * (ptsy[i] - py)); // X component
 			  pts_veh(1, i) = (sin(psi) * (ptsx[i] - px)) + (cos(psi) * (ptsy[i] - py)); // Y component
 		  }
 		  std::cout << "main::main() Points transformed" << std::endl;
 		
-		  // Fit a polynomial to the above x and y coordinates
-		  auto coeffs = polyfit(pts_veh.row(0), pts_veh.row(1), 1);
+		  // Fit a 3rd order polynomial to the above x and y coordinates
+		  auto coeffs = polyfit(pts_veh.row(0), pts_veh.row(1), 3);
 
 		  // Calculate CTE and heading angle error, keeping in mind px = 0, py = 0 and psi = 0
 		  double cte = polyeval(coeffs, 0);
@@ -155,10 +155,10 @@ int main() {
           vector<double> next_x_vals;
           vector<double> next_y_vals;
 
-		  for (int i = 0; i < pts_veh.row(0).size(); i++)
+		  for (int i = 0; i < 100; i++)
 		  {
-			  next_x_vals.push_back(pts_veh(0, i));
-			  next_y_vals.push_back(pts_veh(1, i));
+			  next_x_vals.push_back(i);
+			  next_y_vals.push_back(polyeval(coeffs,i));
 		  }
 		  std::cout << "main::main() Refernece points added" << std::endl;
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
