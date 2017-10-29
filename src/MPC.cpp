@@ -182,14 +182,21 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   Dvector vars_lowerbound(n_vars);
   Dvector vars_upperbound(n_vars);
   // TODO: Set lower and upper limits for variables actuators in radians.
+
+  // Set all non-actuators upper and lowerlimits to the max negative and positive values.
+  for (int i = 0; i < delta_start; i++) {
+	  vars_lowerbound[i] = -1.0e19;
+	  vars_upperbound[i] = 1.0e19;
+  }
+  
   // Range is set from -25° to + 25° for the steering
-  for (size_t i = 0; i < delta_start; i++) {
+  for (size_t i = delta_start; i < a_start; i++) {
 	  vars_lowerbound[i] = -0.436332;
 	  vars_upperbound[i] = 0.436332;
   }
 
   // Range is set from -1 to 1 for the acceleration
-  for (size_t i = delta_start; i < a_start; i++) {
+  for (int i = a_start; i < n_vars; i++) {
 	  vars_lowerbound[i] = -1.0;
 	  vars_upperbound[i] = 1.0;
   }
@@ -262,10 +269,10 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   // creates a 2 element double vector.
   auto result = { solution.x[delta_start], solution.x[a_start] };
   
-  for (size_t i = 0; i < N; i++)
+  for (size_t i = 0; i < N - 1; i++)
   {
-	  pred_path(0, i) = solution.x[x_start + i];
-	  pred_path(1, i) = solution.x[y_start + i];
+	  pred_path(0, i) = solution.x[x_start + i + 1];
+	  pred_path(1, i) = solution.x[y_start + i +  1];
   }
 
   return result;
