@@ -269,10 +269,10 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   // creates a 2 element double vector.
   auto result = { solution.x[delta_start], solution.x[a_start] };
   
-  for (size_t i = 0; i < N - 1; i++)
+  for (size_t i = 0; i < N; i++)
   {
-	  pred_path(0, i) = solution.x[x_start + i + 1];
-	  pred_path(1, i) = solution.x[y_start + i +  1];
+	  pred_path(0, i) = solution.x[x_start + i];
+	  pred_path(1, i) = solution.x[y_start + i];
   }
 
   return result;
