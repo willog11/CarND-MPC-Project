@@ -79,6 +79,7 @@ class FG_eval {
 			fg[0] += CppAD::pow(vars[delta_start + i + 1], 2) - CppAD::pow(vars[delta_start + i], 2);
 			fg[0] += CppAD::pow(vars[a_start + i + 1], 2) - CppAD::pow(vars[a_start + i], 2);
 		}
+		std::cout << "FG_eval::Operator() cost function updated" << endl;
 
 		// **********************************************************
 		// Model 
@@ -101,7 +102,7 @@ class FG_eval {
 		fg[1 + cte_start] = vars[cte_start];
 		fg[1 + epsi_start] = vars[epsi_start];
 
-		for (size_t i = 1; i <= N; i++) 
+		for (size_t i = 1; i < N; i++) 
 		{
 
 			// The state at time t+1
