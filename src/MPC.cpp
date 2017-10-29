@@ -141,8 +141,8 @@ class FG_eval {
 			fg[1 + cte_start + i] = f0 - (cte0 + v0 * CppAD::sin(epsi0) * dt);
 			fg[1 + epsi_start + i] = epsi1 - (epsi0 - psides0 + v0 / Lf * dt);
 		}
+		std::cout << "FG_eval::Operator() finished" << endl;
 	}
-	std::cout << "FG_eval::Operator() finished" << endl;
 };
 
 //
