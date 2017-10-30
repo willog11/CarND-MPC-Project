@@ -22,7 +22,7 @@ double dt = 0.1;
 const double Lf = 2.67;
 
 // Reference velocity
-const double v_ref = 70;
+const double v_ref = 100;
 
 // The solver takes all the state variables and actuator
 // variables in a singular vector. Thus, we should to establish
@@ -44,7 +44,7 @@ const int delta_weight = 10;
 const int a_weight = 10;
 const int delta_a_weight = 750;
 const int delta_smooth_weight = 200;
-const int a_smooth_weight = 50;
+const int a_smooth_weight = 100;
 
 class FG_eval {
  public:
