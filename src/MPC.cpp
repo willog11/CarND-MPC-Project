@@ -6,7 +6,7 @@
 using CppAD::AD;
 
 // TODO: Set the timestep length and duration
-size_t N = 10;
+size_t N = 20;
 double dt = 0.1;
 
 // This value assumes the model presented in the classroom is used.
@@ -22,7 +22,7 @@ double dt = 0.1;
 const double Lf = 2.67;
 
 // Reference velocity
-const double v_ref = 75;
+const double v_ref = 70;
 
 // The solver takes all the state variables and actuator
 // variables in a singular vector. Thus, we should to establish
@@ -60,23 +60,23 @@ class FG_eval {
 		// Setup cost function to minimize the CTE, heading angle and velocity errors
 		for (size_t i = 0; i < N; i++)
 		{
-			fg[0] += CppAD::pow(vars[cte_start + i], 2);
-			fg[0] += CppAD::pow(vars[epsi_start + i], 2);
+			fg[0] += 1000 * CppAD::pow(vars[cte_start + i], 2);
+			fg[0] += 1000 * CppAD::pow(vars[epsi_start + i], 2);
 			fg[0] += CppAD::pow(vars[v_start + i] - v_ref, 2);
 		}
 
 		// Minimize change rate
 		for (size_t i = 0; i < N - 1; i++)
 		{
-			fg[0] += CppAD::pow(vars[delta_start + i], 2);
-			fg[0] += CppAD::pow(vars[a_start + i], 2);
+			fg[0] += 10 * CppAD::pow(vars[delta_start + i], 2);
+			fg[0] += 10 * CppAD::pow(vars[a_start + i], 2);
 		}
 
 		// Minimize the value gap between sequential actuations  - smoothen the control.
 		for (size_t i = 0; i < N - 2; i++)
 		{
 			fg[0] += 500 * CppAD::pow(vars[delta_start + i + 1], 2) - CppAD::pow(vars[delta_start + i], 2); // Tune the steering to become more smooth
-			fg[0] += 100 * CppAD::pow(vars[a_start + i + 1], 2) - CppAD::pow(vars[a_start + i], 2);
+			fg[0] += 50 * CppAD::pow(vars[a_start + i + 1], 2) - CppAD::pow(vars[a_start + i], 2);
 		}
 
 		// **********************************************************
