@@ -22,7 +22,7 @@ double dt = 0.1;
 const double Lf = 2.67;
 
 // Reference velocity
-const double v_ref = 100;
+const double v_ref = 70;
 
 // The solver takes all the state variables and actuator
 // variables in a singular vector. Thus, we should to establish
@@ -39,11 +39,11 @@ size_t a_start = delta_start + N - 1;
 // Weights to be applier to each cost function - the higher the value the greater of importance
 const int cte_weight = 3000;
 const int epsi_weight = 3000;
-const int v_weight = 1;
+const int v_weight = 10;
 const int delta_weight = 10;
 const int a_weight = 10;
 const int delta_a_weight = 700;
-const int delta_smooth_weight = 200;
+const int delta_smooth_weight = 300;
 const int a_smooth_weight = 10;
 
 class FG_eval {
