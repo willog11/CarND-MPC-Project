@@ -80,7 +80,7 @@ class FG_eval {
 		{
 			fg[0] += delta_weight * CppAD::pow(vars[delta_start + t], 2);
 			fg[0] += a_weight * CppAD::pow(vars[a_start + t], 2);
-			//fg[0] += delta_a_weight * CppAD::pow(vars[delta_start + t] * vars[v_start + t], 2);
+			fg[0] += delta_a_weight * CppAD::pow(vars[delta_start + t] * vars[v_start + t], 2);
 		}
 
 		// Minimize the value gap between sequential actuations  - smoothen the control.
