@@ -269,10 +269,10 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   result.push_back(solution.x[delta_start]);
   result.push_back(solution.x[a_start]);
   
-  for (size_t i = 0; i < N - 1; i++)
+  for (size_t i = 0; i < N; i++)
   {
-	  result.push_back(solution.x[x_start + i + 1]);
-	  result.push_back(solution.x[y_start + i + 1]);
+	  result.push_back(solution.x[x_start + i]);
+	  result.push_back(solution.x[y_start + i]);
   }
 
   return result;
