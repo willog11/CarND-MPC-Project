@@ -60,8 +60,8 @@ class FG_eval {
 		// Setup cost function to minimize the CTE, heading angle and velocity errors
 		for (size_t i = 0; i < N; i++)
 		{
-			fg[0] += 2000 * CppAD::pow(vars[cte_start + i], 2);
-			fg[0] += 2000 * CppAD::pow(vars[epsi_start + i], 2);
+			fg[0] += 3000 * CppAD::pow(vars[cte_start + i], 2);
+			fg[0] += 3000 * CppAD::pow(vars[epsi_start + i], 2);
 			fg[0] += CppAD::pow(vars[v_start + i] - v_ref, 2);
 		}
 
