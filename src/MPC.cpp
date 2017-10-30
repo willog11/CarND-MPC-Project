@@ -22,7 +22,7 @@ double dt = 0.1;
 const double Lf = 2.67;
 
 // Reference velocity
-const double v_ref = 60;
+const double v_ref = 75;
 
 // The solver takes all the state variables and actuator
 // variables in a singular vector. Thus, we should to establish
@@ -80,7 +80,7 @@ class FG_eval {
 		{
 			fg[0] += delta_weight * CppAD::pow(vars[delta_start + t], 2);
 			fg[0] += a_weight * CppAD::pow(vars[a_start + t], 2);
-			fg[0] += delta_a_weight * CppAD::pow(vars[delta_start + t] * vars[v_start + t], 2);
+			//fg[0] += delta_a_weight * CppAD::pow(vars[delta_start + t] * vars[v_start + t], 2);
 		}
 
 		// Minimize the value gap between sequential actuations  - smoothen the control.
