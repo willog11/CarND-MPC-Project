@@ -125,23 +125,23 @@ int main() {
           */
 
 		  vector<double> result = mpc.Solve(state, coeffs);
-          double steer_value = result[0];
-          double throttle_value = result[1];
 
           json msgJson;
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
           // Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
-          msgJson["steering_angle"] = steer_value;
-          msgJson["throttle"] = throttle_value;
+          msgJson["steering_angle"] = result[0];
+          msgJson["throttle"] = result[1];
 
           //Display the MPC predicted trajectory 
           vector<double> mpc_x_vals;
           vector<double> mpc_y_vals;
 
-		  for (int i = 0; i < mpc.pred_path.row(0).size(); i++)
+		  for (size_t i = 2; i < result.size(); i++)
 		  {
-			  mpc_x_vals.push_back(mpc.pred_path(0, i));
-			  mpc_y_vals.push_back(mpc.pred_path(1, i));
+			  if (i % 2 == 0)
+				  mpc_x_vals.push_back(result[i]);
+			  else
+				  mpc_y_vals.push_back(result[i]);
 		  }
 
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system

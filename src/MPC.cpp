@@ -60,8 +60,8 @@ class FG_eval {
 		// Setup cost function to minimize the CTE, heading angle and velocity errors
 		for (size_t i = 0; i < N; i++)
 		{
-			fg[0] += 1000 * CppAD::pow(vars[cte_start + i], 2);
-			fg[0] += 1000 * CppAD::pow(vars[epsi_start + i], 2);
+			fg[0] += 2000 * CppAD::pow(vars[cte_start + i], 2);
+			fg[0] += 2000 * CppAD::pow(vars[epsi_start + i], 2);
 			fg[0] += CppAD::pow(vars[v_start + i] - v_ref, 2);
 		}
 
@@ -75,7 +75,7 @@ class FG_eval {
 		// Minimize the value gap between sequential actuations  - smoothen the control.
 		for (size_t i = 0; i < N - 2; i++)
 		{
-			fg[0] += 500 * CppAD::pow(vars[delta_start + i + 1], 2) - CppAD::pow(vars[delta_start + i], 2); // Tune the steering to become more smooth
+			fg[0] += 300 * CppAD::pow(vars[delta_start + i + 1], 2) - CppAD::pow(vars[delta_start + i], 2); // Tune the steering to become more smooth
 			fg[0] += 50 * CppAD::pow(vars[a_start + i + 1], 2) - CppAD::pow(vars[a_start + i], 2);
 		}
 
@@ -137,7 +137,7 @@ class FG_eval {
 			fg[1 + y_start + i] = y1 - (y0 + v0 * CppAD::sin(psi0) * dt);
 			fg[1 + psi_start + i] = psi1 - (psi0 - v0 / Lf * delta0 * dt); // Applying polarity update for simulator steering
 			fg[1 + v_start + i] = v1 - (v0 + a0 * dt);
-			fg[1 + cte_start + i] = cte1 - ((f0 - y0) + v0 * CppAD::sin(epsi0) * dt);
+			fg[1 + cte_start + i] = cte1 - ((f0 - y0) + (v0 * CppAD::sin(epsi0) * dt));
 			fg[1 + epsi_start + i] = epsi1 - ((psi0 - psides0) + v0 * delta0 / Lf * dt);
 		}
 	}
@@ -146,10 +146,7 @@ class FG_eval {
 //
 // MPC class definition implementation.
 //
-MPC::MPC() 
-{
-	pred_path = Eigen::MatrixXd(2, N);
-}
+MPC::MPC() {}
 MPC::~MPC() {}
 
 vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
@@ -267,12 +264,14 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   //
   // {...} is shorthand for creating a vector, so auto x1 = {1.0,2.0}
   // creates a 2 element double vector.
-  auto result = { solution.x[delta_start], solution.x[a_start] };
+  vector<double> result;
+  result.push_back(solution.x[delta_start]);
+  result.push_back(solution.x[a_start]);
   
   for (size_t i = 0; i < N; i++)
   {
-	  pred_path(0, i) = solution.x[x_start + i];
-	  pred_path(1, i) = solution.x[y_start + i];
+	  result.push_back(solution.x[x_start + i]);
+	  result.push_back(solution.x[y_start + i]);
   }
 
   return result;
