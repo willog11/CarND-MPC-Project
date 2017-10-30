@@ -3,6 +3,66 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## Introduction
+
+The purpose of the project was to implement a MPC (Model, Predictive and Control) controller and tune it so that the vehicle drives safely around the track.
+## Rubric Tasks
+
+## Rubric Tasks
+
+### The Model - Student describes their model in detail. This includes the state, actuators and update equations.
+
+The kinematic model contiains various  amounts of information including the vehicles x and y coordinates, orientation (psi) and velocity as well as cross-track error (CTE) and psi error (epsi). The outputs of the model inculdes actuators such as acceleration and delta (steering angle). 
+The model takes into account the state and actuations from the previous timestep to calculate the state for the current timestep based on the equations below:
+
+~~~
+
+x_[t+1] = x[t] + v[t] * cos(psi[t]) * dt
+y_[t+1] = y[t] + v[t] * sin(psi[t]) * dt
+psi_[t+1] = psi[t] + v[t] / Lf * delta[t] * dt
+v_[t+1] = v[t] + a[t-1] * dt
+cte[t+1] = f(x[t]) - y[t] + v[t] * sin(epsi[t]) * dt
+epsi[t+1] = psi[t] - psides[t] + v[t] * delta[t-1] / Lf * dt
+
+~~~
+
+### Timestep Length and Elapsed Duration (N & dt) - Discussion on how and why these coefficients were selected
+
+The values chosen for N and dt were 10 and 0.1 respectively. A dt of 0.1 was chosen so as to keep in line with the 100ms latency that was added. The dt value of 0.1 meant the latency could easily be corrected for (see below). 
+
+Other values of N were tested such as 20, 15 and 8 however each of these resulted in degraded performance, in most cases erratic behaviour.
+
+### Polynomial Fitting and MPC Preprocessing
+
+The waypoints were transformed from the map co-oridinates to the vehicles co-ordinates using the following code:
+
+~~~
+
+Eigen::MatrixXd pts_veh(2, ptsx.size());
+		  for (size_t i = 0; i < ptsx.size(); i++)
+		  {
+			  pts_veh(0, i) = (cos(-psi) * (ptsx[i] - px)) - (sin(-psi) * (ptsy[i] - py)); // X component
+			  pts_veh(1, i) = (sin(-psi) * (ptsx[i] - px)) + (cos(-psi) * (ptsy[i] - py)); // Y component
+		  }
+		
+~~~
+
+Note: px = 0, py = 0 and psi = 0 because this is the center of car space which made the calculations easier.
+
+### Model Predictive Control with Latency
+
+The latency was mainly handled when calculating the model where the previous actuator values were used. As stated above a dt value of 0.1 was picked to allow for this implementation. 
+
+Additionally the model cost functions were set according to proposals in the lessons where there was additional cost from CTE, epsi, difference between velocity and a velocity reference and more. A final additional cost function was added which included both velocity and delta to help stabilize the model during cornering.
+
+### Demo recording
+
+[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/resm86x_hl8/0.jpg)](https://www.youtube.com/watch?v=resm86x_hl8)
+
+
+---
+
+
 ## Dependencies
 
 * cmake >= 3.5

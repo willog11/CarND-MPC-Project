@@ -112,10 +112,10 @@ int main() {
 
 		  // Calculate CTE and heading angle error, keeping in mind px = 0, py = 0 and psi = 0
 		  double cte = polyeval(coeffs, 0);
-		  double epsilon = -atan(coeffs[1]);
+		  double epsi = -atan(coeffs[1]);
 
 		  Eigen::VectorXd state(6);
-		  state << 0, 0, 0, v, cte, epsilon;
+		  state << 0, 0, 0, v, cte, epsi;
 
           /*
           * TODO: Calculate steering angle and throttle using MPC.
