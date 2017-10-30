@@ -40,11 +40,11 @@ size_t a_start = delta_start + N - 1;
 const int cte_weight = 3000;
 const int epsi_weight = 3000;
 const int v_weight = 1;
-const int delta_weight = 5;
-const int a_weight = 5;
-const int delta_a_weight = 650;
+const int delta_weight = 10;
+const int a_weight = 10;
+const int delta_a_weight = 550;
 const int delta_smooth_weight = 200;
-const int a_smooth_weight = 10;
+const int a_smooth_weight = 50;
 
 class FG_eval {
  public:
