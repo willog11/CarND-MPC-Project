@@ -60,23 +60,23 @@ class FG_eval {
 		// Setup cost function to minimize the CTE, heading angle and velocity errors
 		for (size_t i = 0; i < N; i++)
 		{
-			fg[0] += 3000 * CppAD::pow(vars[cte_start + i], 2);
-			fg[0] += 3000 * CppAD::pow(vars[epsi_start + i], 2);
-			fg[0] += CppAD::pow(vars[v_start + i] - v_ref, 2);
+			fg[0] += 8 * CppAD::pow(vars[cte_start + i], 2);
+			fg[0] += 0.32 * CppAD::pow(vars[epsi_start + i], 2);
+			fg[0] += 0.2 * CppAD::pow(vars[v_start + i] - v_ref, 2);
 		}
 
 		// Minimize change rate
 		for (size_t i = 0; i < N - 1; i++)
 		{
-			fg[0] += 10 * CppAD::pow(vars[delta_start + i], 2);
-			fg[0] += 10 * CppAD::pow(vars[a_start + i], 2);
+			fg[0] += 600000 * CppAD::pow(vars[delta_start + i], 2);
+			fg[0] += 17.0 * CppAD::pow(vars[a_start + i], 2);
 		}
 
 		// Minimize the value gap between sequential actuations  - smoothen the control.
 		for (size_t i = 0; i < N - 2; i++)
 		{
-			fg[0] += 250 * CppAD::pow(vars[delta_start + i + 1], 2) - CppAD::pow(vars[delta_start + i], 2); // Tune the steering to become more smooth
-			fg[0] += 10 * CppAD::pow(vars[a_start + i + 1], 2) - CppAD::pow(vars[a_start + i], 2);
+			fg[0] += 0.01 * CppAD::pow(vars[delta_start + i + 1], 2) - CppAD::pow(vars[delta_start + i], 2); // Tune the steering to become more smooth
+			fg[0] += 0.00001 * CppAD::pow(vars[a_start + i + 1], 2) - CppAD::pow(vars[a_start + i], 2);
 		}
 
 		// **********************************************************
