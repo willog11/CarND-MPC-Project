@@ -36,6 +36,16 @@ size_t epsi_start = cte_start + N;
 size_t delta_start = epsi_start + N;
 size_t a_start = delta_start + N - 1;
 
+// Weights to be applier to each cost function - the higher the value the greater of importance
+const int cte_weight = 2000;
+const int epsi_weight = 2000;
+const int v_weight = 1;
+const int delta_weight = 10;
+const int a_weight = 10;
+const int delta_a_weight = 700;
+const int delta_smooth_weight = 100;
+const int a_smooth_weight = 10;
+
 class FG_eval {
  public:
 	// Fitted polynomial coefficients
@@ -60,24 +70,24 @@ class FG_eval {
 		// Setup cost function to minimize the CTE, heading angle and velocity errors
 		for (size_t i = 0; i < N; i++)
 		{
-			fg[0] += 3000 * CppAD::pow(vars[cte_start + i], 2);
-			fg[0] += 3000 * CppAD::pow(vars[epsi_start + i], 2);
-			fg[0] += CppAD::pow(vars[v_start + i] - v_ref, 2);
+			fg[0] += cte_weight * CppAD::pow(vars[cte_start + i], 2);
+			fg[0] += epsi_weight * CppAD::pow(vars[epsi_start + i], 2);
+			fg[0] += v_weight * CppAD::pow(vars[v_start + i] - v_ref, 2);
 		}
 
 		// Minimize change rate
 		for (size_t i = 0; i < N - 1; i++)
 		{
-			fg[0] += 5 * CppAD::pow(vars[delta_start + i], 2);
-			fg[0] += 5 * CppAD::pow(vars[a_start + i], 2);
-			fg[0] += 700 * CppAD::pow(vars[delta_start + i] * vars[v_start + i], 2);
+			fg[0] += delta_weight * CppAD::pow(vars[delta_start + i], 2);
+			fg[0] += a_weight * CppAD::pow(vars[a_start + i], 2);
+			//fg[0] += delta_a_weight * CppAD::pow(vars[delta_start + i] * vars[v_start + i], 2);
 		}
 
 		// Minimize the value gap between sequential actuations  - smoothen the control.
 		for (size_t i = 0; i < N - 2; i++)
 		{
-			fg[0] += 200 * CppAD::pow(vars[delta_start + i + 1], 2) - CppAD::pow(vars[delta_start + i], 2); // Tune the steering to become more smooth
-			fg[0] += 10 * CppAD::pow(vars[a_start + i + 1], 2) - CppAD::pow(vars[a_start + i], 2);
+			fg[0] += delta_smooth_weight * CppAD::pow(vars[delta_start + i + 1], 2) - CppAD::pow(vars[delta_start + i], 2); // Tune the steering to become more smooth
+			fg[0] += a_smooth_weight * CppAD::pow(vars[a_start + i + 1], 2) - CppAD::pow(vars[a_start + i], 2);
 		}
 
 		// **********************************************************
