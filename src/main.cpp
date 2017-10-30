@@ -179,7 +179,7 @@ int main() {
           vector<double> next_x_vals;
           vector<double> next_y_vals;
 
-		  for (int i = 0; i < 100; i++)
+		  for (int i = 0; i < 50; i++)
 		  {
 			  next_x_vals.push_back(i);
 			  next_y_vals.push_back(polyeval(coeffs,i));
