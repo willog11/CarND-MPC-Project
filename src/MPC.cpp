@@ -39,9 +39,9 @@ size_t a_start = delta_start + N - 1;
 // Weights to be applier to each cost function - the higher the value the greater of importance
 const int cte_weight = 3000;
 const int epsi_weight = 3000;
-const int v_weight = 10;
-const int delta_weight = 10;
-const int a_weight = 10;
+const int v_weight = 5;
+const int delta_weight = 5;
+const int a_weight = 5;
 const int delta_a_weight = 700;
 const int delta_smooth_weight = 200;
 const int a_smooth_weight = 10;
