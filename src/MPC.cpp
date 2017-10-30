@@ -68,26 +68,26 @@ class FG_eval {
 		// **********************************************************
 
 		// Setup cost function to minimize the CTE, heading angle and velocity errors
-		for (size_t i = 0; i < N; i++)
+		for (size_t t = 0; t < N; t++)
 		{
-			fg[0] += cte_weight * CppAD::pow(vars[cte_start + i], 2);
-			fg[0] += epsi_weight * CppAD::pow(vars[epsi_start + i], 2);
-			fg[0] += v_weight * CppAD::pow(vars[v_start + i] - v_ref, 2);
+			fg[0] += cte_weight * CppAD::pow(vars[cte_start + t], 2);
+			fg[0] += epsi_weight * CppAD::pow(vars[epsi_start + t], 2);
+			fg[0] += v_weight * CppAD::pow(vars[v_start + t] - v_ref, 2);
 		}
 
 		// Minimize change rate
-		for (size_t i = 0; i < N - 1; i++)
+		for (size_t t = 0; t < N - 1; t++)
 		{
-			fg[0] += delta_weight * CppAD::pow(vars[delta_start + i], 2);
-			fg[0] += a_weight * CppAD::pow(vars[a_start + i], 2);
+			fg[0] += delta_weight * CppAD::pow(vars[delta_start + t], 2);
+			fg[0] += a_weight * CppAD::pow(vars[a_start + t], 2);
 			//fg[0] += delta_a_weight * CppAD::pow(vars[delta_start + i] * vars[v_start + i], 2);
 		}
 
 		// Minimize the value gap between sequential actuations  - smoothen the control.
-		for (size_t i = 0; i < N - 2; i++)
+		for (size_t t = 0; t < N - 2; t++)
 		{
-			fg[0] += delta_smooth_weight * CppAD::pow(vars[delta_start + i + 1], 2) - CppAD::pow(vars[delta_start + i], 2); // Tune the steering to become more smooth
-			fg[0] += a_smooth_weight * CppAD::pow(vars[a_start + i + 1], 2) - CppAD::pow(vars[a_start + i], 2);
+			fg[0] += delta_smooth_weight * CppAD::pow(vars[delta_start + t + 1], 2) - CppAD::pow(vars[delta_start + t], 2); // Tune the steering to become more smooth
+			fg[0] += a_smooth_weight * CppAD::pow(vars[a_start + t + 1], 2) - CppAD::pow(vars[a_start + t], 2);
 		}
 
 		// **********************************************************
@@ -111,28 +111,36 @@ class FG_eval {
 		fg[1 + cte_start] = vars[cte_start];
 		fg[1 + epsi_start] = vars[epsi_start];
 
-		for (size_t i = 1; i < N; i++) 
+		for (size_t t = 1; t < N; t++) 
 		{
 
 			// The state at time t+1
-			AD<double> x1		= vars[x_start + i];
-			AD<double> y1		= vars[y_start + i];
-			AD<double> psi1	= vars[psi_start + i];
-			AD<double> v1		= vars[v_start + i];
-			AD<double> cte1	= vars[cte_start + i];
-			AD<double> epsi1	= vars[epsi_start + i];
+			AD<double> x1		= vars[x_start + t];
+			AD<double> y1		= vars[y_start + t];
+			AD<double> psi1	= vars[psi_start + t];
+			AD<double> v1		= vars[v_start + t];
+			AD<double> cte1	= vars[cte_start + t];
+			AD<double> epsi1	= vars[epsi_start + t];
 
 			//The state at time t
-			AD<double> x0		= vars[x_start + i - 1];
-			AD<double> y0		= vars[y_start + i - 1];
-			AD<double> psi0	= vars[psi_start + i - 1];
-			AD<double> v0		= vars[v_start + i - 1];
-			AD<double> cte0	= vars[cte_start + i - 1];
-			AD<double> epsi0	= vars[epsi_start + i - 1];
+			AD<double> x0		= vars[x_start + t - 1];
+			AD<double> y0		= vars[y_start + t - 1];
+			AD<double> psi0	= vars[psi_start + t - 1];
+			AD<double> v0		= vars[v_start + t - 1];
+			AD<double> cte0	= vars[cte_start + t - 1];
+			AD<double> epsi0	= vars[epsi_start + t - 1];
 
 			// Actuation at time t
-			AD<double> delta0 = vars[delta_start + i - 1];
-			AD<double> a0 = vars[a_start + i - 1];
+			if (i > 1)
+			{
+				AD<double> delta0 = vars[delta_start + t - 2];
+				AD<double> a0 = vars[a_start + t - 2];
+			}
+			else
+			{
+				AD<double> delta0 = vars[delta_start + t - 1];
+				AD<double> a0 = vars[a_start + t - 1];
+			}
 
 			// F[t] and heading angle
 			AD<double> f0 = coeffs[0] + coeffs[1] * x0 + coeffs[2] * CppAD::pow(x0, 2) + coeffs[3] * CppAD::pow(x0, 3);
@@ -140,16 +148,16 @@ class FG_eval {
 
 			// x_[t] = x[t-1] + v[t-1] * cos(psi[t-1]) * dt
 			// y_[t] = y[t-1] + v[t-1] * sin(psi[t-1]) * dt
-			// psi_[t] = psi[t-1] + v[t-1] / Lf * delta[t-1] * dt
+			// psi_[t] = psi[t-1] - v[t-1] / Lf * delta[t-1] * dt
 			// v_[t] = v[t-1] + a[t-1] * dt
 			// cte[t] = f(x[t-1]) - y[t-1] + v[t-1] * sin(epsi[t-1]) * dt
-			// epsi[t] = psi[t] - psides[t-1] + v[t-1] * delta[t-1] / Lf * dt
+			// epsi[t] = psi[t] - psides[t-1] - v[t-1] * delta[t-1] / Lf * dt
 			fg[1 + x_start + i] = x1 - (x0 + v0 * CppAD::cos(psi0) * dt);
 			fg[1 + y_start + i] = y1 - (y0 + v0 * CppAD::sin(psi0) * dt);
 			fg[1 + psi_start + i] = psi1 - (psi0 - v0 / Lf * delta0 * dt); // Applying polarity update for simulator steering
 			fg[1 + v_start + i] = v1 - (v0 + a0 * dt);
 			fg[1 + cte_start + i] = cte1 - ((f0 - y0) + (v0 * CppAD::sin(epsi0) * dt));
-			fg[1 + epsi_start + i] = epsi1 - ((psi0 - psides0) - v0 * delta0 / Lf * dt);
+			fg[1 + epsi_start + i] = epsi1 - ((psi0 - psides0) - v0 * delta0 / Lf * dt); // Applying polarity update for simulator steering
 		}
 	}
 };
