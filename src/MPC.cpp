@@ -41,7 +41,7 @@ size_t a_start = delta_start + N - 1;
 //2250 slow but stable, 2000 near miss
 const int cte_weight = 2000;
 const int epsi_weight = 2000;
-const int v_weight = 1.5;
+const int v_weight = 1;
 const int delta_weight = 5;
 const int a_weight = 20;
 const int delta_a_weight = 500;
