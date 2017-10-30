@@ -37,13 +37,13 @@ size_t delta_start = epsi_start + N;
 size_t a_start = delta_start + N - 1;
 
 // Weights to be applier to each cost function - the higher the value the greater of importance
-const int cte_weight = 3000;
-const int epsi_weight = 3000;
-const int v_weight = 5;
-const int delta_weight = 5;
-const int a_weight = 5;
+const int cte_weight = 2000;
+const int epsi_weight = 2000;
+const int v_weight = 1;
+const int delta_weight = 10;
+const int a_weight = 10;
 const int delta_a_weight = 700;
-const int delta_smooth_weight = 200;
+const int delta_smooth_weight = 100;
 const int a_smooth_weight = 10;
 
 class FG_eval {
@@ -80,7 +80,7 @@ class FG_eval {
 		{
 			fg[0] += delta_weight * CppAD::pow(vars[delta_start + t], 2);
 			fg[0] += a_weight * CppAD::pow(vars[a_start + t], 2);
-			fg[0] += delta_a_weight * CppAD::pow(vars[delta_start + t] * vars[v_start + t], 2);
+			//fg[0] += delta_a_weight * CppAD::pow(vars[delta_start + t] * vars[v_start + t], 2);
 		}
 
 		// Minimize the value gap between sequential actuations  - smoothen the control.
