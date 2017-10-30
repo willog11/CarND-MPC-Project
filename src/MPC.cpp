@@ -22,7 +22,7 @@ double dt = 0.1;
 const double Lf = 2.67;
 
 // Reference velocity
-const double v_ref = 45;
+const double v_ref = 120;
 
 // The solver takes all the state variables and actuator
 // variables in a singular vector. Thus, we should to establish
@@ -37,13 +37,13 @@ size_t delta_start = epsi_start + N;
 size_t a_start = delta_start + N - 1;
 
 // Weights to be applier to each cost function - the higher the value the greater of importance
-const int cte_weight = 3000;
-const int epsi_weight = 3000;
+const int cte_weight = 2000;
+const int epsi_weight = 2000;
 const int v_weight = 1;
-const int delta_weight = 50;
-const int a_weight = 5;
+const int delta_weight = 10;
+const int a_weight = 10;
 //const int delta_a_weight = 700;
-const int delta_smooth_weight = 200;
+const int delta_smooth_weight = 100;
 const int a_smooth_weight = 10;
 
 class FG_eval {
@@ -86,8 +86,8 @@ class FG_eval {
 		// Minimize the value gap between sequential actuations  - smoothen the control.
 		for (size_t t = 0; t < N - 2; t++)
 		{
-			fg[0] += delta_smooth_weight * CppAD::pow(vars[delta_start + t + 1], 2) - CppAD::pow(vars[delta_start + t], 2); // Tune the steering to become more smooth
-			fg[0] += a_smooth_weight * CppAD::pow(vars[a_start + t + 1], 2) - CppAD::pow(vars[a_start + t], 2);
+			fg[0] += delta_smooth_weight * CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2); // Tune the steering to become more smooth
+			fg[0] += a_smooth_weight * CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
 		}
 
 		// **********************************************************
