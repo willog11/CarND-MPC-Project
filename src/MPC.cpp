@@ -22,7 +22,7 @@ double dt = 0.1;
 const double Lf = 2.67;
 
 // Reference velocity
-const double v_ref = 70;
+const double v_ref = 75;
 
 // The solver takes all the state variables and actuator
 // variables in a singular vector. Thus, we should to establish
@@ -75,8 +75,8 @@ class FG_eval {
 		// Minimize the value gap between sequential actuations  - smoothen the control.
 		for (size_t i = 0; i < N - 2; i++)
 		{
-			fg[0] += 300 * CppAD::pow(vars[delta_start + i + 1], 2) - CppAD::pow(vars[delta_start + i], 2); // Tune the steering to become more smooth
-			fg[0] += 50 * CppAD::pow(vars[a_start + i + 1], 2) - CppAD::pow(vars[a_start + i], 2);
+			fg[0] += 250 * CppAD::pow(vars[delta_start + i + 1], 2) - CppAD::pow(vars[delta_start + i], 2); // Tune the steering to become more smooth
+			fg[0] += 10 * CppAD::pow(vars[a_start + i + 1], 2) - CppAD::pow(vars[a_start + i], 2);
 		}
 
 		// **********************************************************
