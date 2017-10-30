@@ -42,8 +42,8 @@ const int epsi_weight = 3000;
 const int v_weight = 1;
 const int delta_weight = 5;
 const int a_weight = 5;
-const int delta_a_weight = 600;
-const int delta_smooth_weight = 200;
+const int delta_a_weight = 500;
+const int delta_smooth_weight = 100;
 const int a_smooth_weight = 10;
 
 class FG_eval {
