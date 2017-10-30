@@ -6,11 +6,10 @@ Self-Driving Car Engineer Nanodegree Program
 ## Introduction
 
 The purpose of the project was to implement a MPC (Model, Predictive and Control) controller and tune it so that the vehicle drives safely around the track.
-## Rubric Tasks
 
 ## Rubric Tasks
 
-### The Model - Student describes their model in detail. This includes the state, actuators and update equations.
+### The Model 
 
 The kinematic model contiains various  amounts of information including the vehicles x and y coordinates, orientation (psi) and velocity as well as cross-track error (CTE) and psi error (epsi). The outputs of the model inculdes actuators such as acceleration and delta (steering angle). 
 The model takes into account the state and actuations from the previous timestep to calculate the state for the current timestep based on the equations below:
@@ -26,7 +25,7 @@ epsi[t+1] = psi[t] - psides[t] + v[t] * delta[t-1] / Lf * dt
 
 ~~~
 
-### Timestep Length and Elapsed Duration (N & dt) - Discussion on how and why these coefficients were selected
+### Timestep Length and Elapsed Duration (N & dt)
 
 The values chosen for N and dt were 10 and 0.1 respectively. A dt of 0.1 was chosen so as to keep in line with the 100ms latency that was added. The dt value of 0.1 meant the latency could easily be corrected for (see below). 
 
