@@ -117,10 +117,10 @@ int main() {
 		  double epsilon = -atan(coeffs[1]);
 
 		  // Center of gravity needed related to psi and epsi
-		  const double Lf = 2.67;
+		  //const double Lf = 2.67;
 
 		  // Latency for predicting time at actuation
-		  const double dt = 0.1;
+		  //const double dt = 0.1;
 
 		  // Predict state after latency
 
@@ -132,15 +132,15 @@ int main() {
 		  // epsi[t] = psi[t] - psides[t-1] - v[t-1] * delta[t-1] / Lf * dt
 
 		  // x, y and psi are all zero after transformation above
-		  double pred_px = v * dt; // Since psi is zero, cos(0) = 1, can leave out
+		  /*double pred_px = v * dt; // Since psi is zero, cos(0) = 1, can leave out
 		  double pred_py = 0.0; // sin(0) = 0, 
 		  double pred_psi = -v * delta / Lf * dt; // Note: polarity of steering in simulator
 		  double pred_v = v + a * dt;
 		  double pred_cte = cte + v * sin(epsilon) * dt;
-		  double pred_epsi = epsilon - v * delta / Lf * dt; // Note: polarity of steering in simulator
+		  double pred_epsi = epsilon - v * delta / Lf * dt; // Note: polarity of steering in simulator*/
 
 		  Eigen::VectorXd state(6);
-		  state << pred_px, pred_py, pred_psi, pred_v, pred_cte, pred_epsi;
+		  state << 0, 0, 0, v, cte, epsilon;
 
           /*
           * TODO: Calculate steering angle and throttle using MPC.
@@ -154,7 +154,7 @@ int main() {
           json msgJson;
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
           // Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
-          msgJson["steering_angle"] = result[0] / (deg2rad(25) * Lf);
+          msgJson["steering_angle"] = result[0] / deg2rad(25);
           msgJson["throttle"] = result[1];
 
           //Display the MPC predicted trajectory 
