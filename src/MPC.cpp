@@ -133,12 +133,19 @@ class FG_eval {
 			AD<double> epsi0	= vars[epsi_start + t - 1];
 
 			// Actuation at time t
-			AD<double> delta0 = vars[delta_start + t - 1];
-			AD<double> a0 = vars[a_start + t - 1];
+			AD<double> delta0;
+			AD<double> a0;
 
-			if (t > 1) {   // Account for lateny.
+			// Account for lateny
+			if (t > 1) 
+			{   
 				a0 = vars[a_start + t - 2];
 				delta0 = vars[delta_start + t - 2];
+			}
+			else
+			{
+				a0 = vars[a_start + t - 1];
+				delta0 = vars[delta_start + t - 1];
 			}
 
 			// F[t] and heading angle
