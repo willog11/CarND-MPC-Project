@@ -68,7 +68,7 @@ class FG_eval {
 		// Minimize change rate
 		for (size_t i = 0; i < N - 1; i++)
 		{
-			fg[0] += 600000 * CppAD::pow(vars[delta_start + i], 2);
+			fg[0] += 6000 * CppAD::pow(vars[delta_start + i], 2);
 			fg[0] += 17.0 * CppAD::pow(vars[a_start + i], 2);
 		}
 
