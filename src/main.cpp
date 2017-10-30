@@ -91,6 +91,8 @@ int main() {
           double py = j[1]["y"];
           double psi = j[1]["psi"];
           double v = j[1]["speed"];
+		  double delta = j[1]["steering_angle"];
+		  double a = j[1]["throttle"];
 
 		  // Loop through all ptsx and ptsy points, transform into vehicle co-ordinates and add to
 		  // an Eigen vector before calculating a best fit line
@@ -114,8 +116,31 @@ int main() {
 		  double cte = polyeval(coeffs, 0);
 		  double epsilon = -atan(coeffs[1]);
 
+		  // Center of gravity needed related to psi and epsi
+		  const double Lf = 2.67;
+
+		  // Latency for predicting time at actuation
+		  const double dt = 0.1;
+
+		  // Predict state after latency
+
+		  // x_[t] = x[t-1] + v[t-1] * cos(psi[t-1]) * dt
+		  // y_[t] = y[t-1] + v[t-1] * sin(psi[t-1]) * dt
+		  // psi_[t] = psi[t-1] - v[t-1] / Lf * delta[t-1] * dt
+		  // v_[t] = v[t-1] + a[t-1] * dt
+		  // cte[t] = f(x[t-1]) - y[t-1] + v[t-1] * sin(epsi[t-1]) * dt
+		  // epsi[t] = psi[t] - psides[t-1] - v[t-1] * delta[t-1] / Lf * dt
+
+		  // x, y and psi are all zero after transformation above
+		  double pred_px = v * dt; // Since psi is zero, cos(0) = 1, can leave out
+		  double pred_py = 0.0; // sin(0) = 0, 
+		  double pred_psi = -v * delta / Lf * dt;
+		  double pred_v = v + a * dt;
+		  double pred_cte = cte + v * sin(epsilon) * dt;
+		  double pred_epsi = epsilon - v * delta / Lf * dt;
+
 		  Eigen::VectorXd state(6);
-		  state << 0, 0, 0.0, v, cte, epsilon; 
+		  state << pred_px, pred_py, pred_psi, pred_v, pred_cte, pred_epsi;
 
           /*
           * TODO: Calculate steering angle and throttle using MPC.
