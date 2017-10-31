@@ -124,14 +124,13 @@ int main() {
           
           // Predict state after latency using kinematic model
           // x, y and psi are all zero after transformation above
-          double pred_px = v * dt; // Since psi is zero, cos(0) = 1, can leave out
-          double pred_py = 0.0; // Since sin(0) = 0, y stays as 0 (y + v * 0 * dt)
+          double pred_px = v * dt;
+          double pred_py = 0.0; 
           double pred_psi = -v * delta / Lf * dt;
           double pred_v = v + a * dt;
           double pred_cte = cte + v * sin(epsi) * dt;
           double pred_epsi = epsi - v * delta / Lf * dt;
 		  
-
 		  Eigen::VectorXd state(6);
 		  state << pred_px, pred_py, pred_psi, pred_v, pred_cte, pred_epsi;
 

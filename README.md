@@ -27,9 +27,10 @@ epsi[t+1] = psi[t] - psides[t] + v[t] * delta[t-1] / Lf * dt
 
 ### Timestep Length and Elapsed Duration (N & dt)
 
-The values chosen for N and dt were 10 and 0.1 respectively. A dt of 0.1 was chosen so as to keep in line with the 100ms latency that was added. The dt value of 0.1 meant the latency could easily be corrected for (see below). 
+The values chosen for N and dt originally were 10 and 0.1 respectively to first give stable performance at lower speeds.
 
-Other values of N were tested such as 20, 15 and 8 however each of these resulted in degraded performance, in most cases erratic behaviour.
+Once a benchmark performance was reached dt was reduced to 0.05 to allow for greater speeds. A N value of 12 wa chosen so as to keep the horizon T to an OK level,  the values selected results in a T of 0.6s.
+As the vehicle is travelling at higher speeds a lower T is more acceptable. It was found that when trying to increase N any further resulted in deteriorating performance. 
 
 ### Polynomial Fitting and MPC Preprocessing
 
@@ -50,13 +51,29 @@ Note: px = 0, py = 0 and psi = 0 because this is the center of car space which m
 
 ### Model Predictive Control with Latency
 
-The latency was mainly handled when calculating the model where the previous actuator values were used. As stated above a dt value of 0.1 was picked to allow for this implementation. 
+The latency was mainly handled by predicting the next state based on the latency applied to the kinematic model as per the equations below. Note here that px, py and psi are all 0s as we have transformed about the center point of the car. 
 
-Additionally the model cost functions were set according to proposals in the lessons where there was additional cost from CTE, epsi, difference between velocity and a velocity reference and more. A final additional cost function was added which included both velocity and delta to help stabilize the model during cornering.
+Thus it results in the following block of code:
+
+~~~
+
+	// Predict state after latency using kinematic model
+	// x, y and psi are all zero after transformation above
+	double pred_px = v * dt;
+	double pred_py = 0.0; 
+	double pred_psi = -v * delta / Lf * dt;
+	double pred_v = v + a * dt;
+	double pred_cte = cte + v * sin(epsi) * dt;
+	double pred_epsi = epsi - v * delta / Lf * dt;
+
+	Eigen::VectorXd state(6);
+	state << pred_px, pred_py, pred_psi, pred_v, pred_cte, pred_epsi;
+
+~~~
 
 ### Demo recording
 
-[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/resm86x_hl8/0.jpg)](https://www.youtube.com/watch?v=resm86x_hl8)
+[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/35GWdBZPK6Q/0.jpg)](https://www.youtube.com/watch?v=35GWdBZPK6Q)
 
 
 ---
