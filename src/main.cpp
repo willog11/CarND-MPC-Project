@@ -122,7 +122,7 @@ int main() {
           // Latency for predicting time at actuation
           const double dt = 0.1;
           
-          // Predict state after latency
+          // Predict state after latency using kinematic model
           // x, y and psi are all zero after transformation above
           double pred_px = v * dt; // Since psi is zero, cos(0) = 1, can leave out
           double pred_py = 0.0; // Since sin(0) = 0, y stays as 0 (y + v * 0 * dt)
