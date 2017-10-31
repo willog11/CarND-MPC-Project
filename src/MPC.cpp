@@ -133,8 +133,8 @@ class FG_eval {
 			AD<double> epsi0	= vars[epsi_start + t - 1];
 
 			// Actuation at time t
-			AD<double> delta0 = a0 = vars[delta_start + t - 1];;
-			AD<double> a0  = vars[a_start + t - 1];;
+			AD<double> delta0 = a0 = vars[delta_start + t - 1];
+			AD<double> a0  = vars[a_start + t - 1];
 
 			// F[t] and heading angle
 			AD<double> f0 = coeffs[0] + coeffs[1] * x0 + coeffs[2] * CppAD::pow(x0, 2) + coeffs[3] * CppAD::pow(x0, 3);
