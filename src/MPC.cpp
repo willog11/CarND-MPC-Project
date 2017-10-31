@@ -45,7 +45,7 @@ const int v_weight = 1;
 const int delta_weight = 100;
 const int a_weight = 50;
 //const int delta_a_weight = 500;
-const int delta_smooth_weight = 65000;
+const int delta_smooth_weight = 6500;
 const int a_smooth_weight = 500;
 
 class FG_eval {
