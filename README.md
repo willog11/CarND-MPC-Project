@@ -29,7 +29,7 @@ epsi[t+1] = psi[t] - psides[t] + v[t] * delta[t-1] / Lf * dt
 
 The values chosen for N and dt originally were 10 and 0.1 respectively to first give stable performance at lower speeds.
 
-Once a benchmark performance was reached dt was reduced to 0.05 to allow for greater speeds. A N value of 12 wa chosen so as to keep the horizon T to an OK level,  the values selected results in a T of 0.6s.
+Once a benchmark performance was reached dt was reduced to 0.05 to allow for greater speeds. A N value of 12 was chosen so as to keep the horizon T to an OK level,  the values selected results in a T of 0.6s.
 As the vehicle is travelling at higher speeds a lower T is more acceptable. It was found that when trying to increase N any further resulted in deteriorating performance. 
 
 ### Polynomial Fitting and MPC Preprocessing
