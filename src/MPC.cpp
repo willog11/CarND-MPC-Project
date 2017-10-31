@@ -22,7 +22,7 @@ double dt = 0.075;
 const double Lf = 2.67;
 
 // Reference velocity
-const double v_ref = 80;
+const double v_ref = 100;
 
 // The solver takes all the state variables and actuator
 // variables in a singular vector. Thus, we should to establish
