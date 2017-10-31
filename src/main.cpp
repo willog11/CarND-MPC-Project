@@ -113,9 +113,25 @@ int main() {
 		  // Calculate CTE and heading angle error, keeping in mind px = 0, py = 0 and psi = 0
 		  double cte = polyeval(coeffs, 0);
 		  double epsi = -atan(coeffs[1]);
+		  
+		  // Center of gravity needed related to psi and epsi
+          const double Lf = 2.67;
+          
+          // Latency for predicting time at actuation
+          const double dt = 0.1;
+          
+          // Predict state after latency
+          // x, y and psi are all zero after transformation above
+          double pred_px = v * dt; // Since psi is zero, cos(0) = 1, can leave out
+          double pred_py = 0.0; // Since sin(0) = 0, y stays as 0 (y + v * 0 * dt)
+          double pred_psi = -v * delta / Lf * dt;
+          double pred_v = v + a * dt;
+          double pred_cte = cte + v * sin(epsi) * dt;
+          double pred_epsi = epsi - v * delta / Lf * dt;
+		  
 
 		  Eigen::VectorXd state(6);
-		  state << 0, 0, 0, v, cte, epsi;
+		  state << pred_px, pred_py, pred_psi, pred_v, pred_cte, pred_epsi;
 
           /*
           * TODO: Calculate steering angle and throttle using MPC.
