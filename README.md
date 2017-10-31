@@ -38,13 +38,13 @@ The waypoints were transformed from the map co-oridinates to the vehicles co-ord
 
 ~~~
 
-Eigen::MatrixXd pts_veh(2, ptsx.size());
-		  for (size_t i = 0; i < ptsx.size(); i++)
-		  {
-			  pts_veh(0, i) = (cos(-psi) * (ptsx[i] - px)) - (sin(-psi) * (ptsy[i] - py)); // X component
-			  pts_veh(1, i) = (sin(-psi) * (ptsx[i] - px)) + (cos(-psi) * (ptsy[i] - py)); // Y component
-		  }
-		
+	Eigen::MatrixXd pts_veh(2, ptsx.size());
+	for (size_t i = 0; i < ptsx.size(); i++)
+	{
+	  pts_veh(0, i) = (cos(-psi) * (ptsx[i] - px)) - (sin(-psi) * (ptsy[i] - py)); // X component
+	  pts_veh(1, i) = (sin(-psi) * (ptsx[i] - px)) + (cos(-psi) * (ptsy[i] - py)); // Y component
+	}
+
 ~~~
 
 Note: px = 0, py = 0 and psi = 0 because this is the center of car space which made the calculations easier.
